@@ -31,7 +31,10 @@ class Demo {
         let response2 = await contract.getPastEvents("AtestacionAdded", { fromBlock: blockNumber, toBlock: blockNumber });
         for(var i=0; i < response2.length; i++){
             if(response2[i].transactionHash === response.transactionHash){
-                result = response2[i].returnValues._id;
+                result = {
+                    "id": response2[i].returnValues._id,
+                    "hash": response.transactionHash
+                }
             }
         }
         console.log("</atestacion>");
