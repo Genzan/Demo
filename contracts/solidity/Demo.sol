@@ -13,7 +13,7 @@ contract Demo {
   address private contractOwner;
   using Counters for Counters.Counter;
   Counters.Counter private _Ids;
-  mapping (string => string) internal Atestaciones;
+  mapping (string => string[]) internal Atestaciones;
   mapping (uint256 => string) internal Busqueda;
 
   //Events
@@ -26,17 +26,17 @@ contract Demo {
   function Atestacion(string memory _curp, string memory _playground) external{
     _Ids.increment();
     uint256 newItemId = _Ids.current();
-    Atestaciones[_curp] = _playground;
-    Busqueda[newItemId] = _curp;
+    Atestaciones[_curp].push(_playground);
+    Busqueda[newItemId] = _playground;
     emit AtestacionAdded(newItemId, _curp, _playground);
   }
 
-  function SearchByCurp(string memory _curp) external view returns (string memory){
+  function SearchByCurp(string memory _curp) external view returns (string[] memory){
     return (Atestaciones[_curp]);
   }
 
   function SearchByID(uint256 _id) external view returns (string memory){
-    return (Atestaciones[Busqueda[_id]]);
+    return (Busqueda[_id]);
   }
   
 }
