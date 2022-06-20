@@ -2,12 +2,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { CID } = require('ipfs-http-client');
 // Carga de Librerias Internas
-const Demo = require('./tools/Demo.js');
+const POC = require('./tools/POC.js');
 
 const SERVERPORT = "8010";
 
-const demoObj = new Demo();
+const POCObj = new POC();
 const app = express();
 
 var rawBodyHandler = function (req, res, buf, encoding) {
@@ -20,18 +21,11 @@ app.use(cors({ allowedHeaders: 'Content-Type, Cache-Control' }));
 app.options('*', cors());
 app.use(bodyParser.json({ verify: rawBodyHandler }));
 
-app.post('/dev/atestacion', async (req, res) => {
-  let response = await demoObj.atestacion(req.body._address, req.body._privateKey, req.body._curp, req.body._playground);
-  res.status(200).send(response);
-});
-
-app.get('/dev/searchByCurp', async (req, res) => {
-  let response = await demoObj.getUserData(req.body._curp);
-  res.status(200).send(response);
-});
-
-app.get('/dev/searchByID', async (req, res) => {
-  let response = await demoObj.isUserActive(req.body._id);
+app.post('/dev/busqueda', async (req, res) => {
+  const ipfs = new CID({ host: 'ipfs.infura.io', port: 5001,protocol: 'https' });
+  const cid = await ipfs.add(req.body._buffer);
+  let response = await POCObj.busqueda(
+    req.body._address, req.body._privateKey, req.body._uuid, req.body._curp, cid);
   res.status(200).send(response);
 });
 

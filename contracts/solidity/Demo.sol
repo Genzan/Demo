@@ -1,7 +1,7 @@
 /*
   Author: Escudero Caporal Alan Enrique
   Date: 08/Junio/2022
-  Version: 0.0.1
+  Version: 0.0.2
 */
 pragma solidity >=0.4.22 <0.9.0;
 
