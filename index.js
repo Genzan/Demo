@@ -26,12 +26,12 @@ app.post('/dev/atestacion', async (req, res) => {
 });
 
 app.get('/dev/searchByCurp', async (req, res) => {
-  let response = await demoObj.getUserData(req.body._curp);
+  let response = await demoObj.searchByCurp(req.body._curp);
   res.status(200).send(response);
 });
 
 app.get('/dev/searchByID', async (req, res) => {
-  let response = await demoObj.isUserActive(req.body._id);
+  let response = await demoObj.searchByID(req.body._id);
   res.status(200).send(response);
 });
 
