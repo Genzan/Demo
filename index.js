@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { CID } = require('ipfs-http-client');
+const ipfsClient = require('ipfs-http-client');
 // Carga de Librerias Internas
 const POC = require('./tools/POC.js');
 
@@ -22,10 +22,16 @@ app.options('*', cors());
 app.use(bodyParser.json({ verify: rawBodyHandler }));
 
 app.post('/dev/busqueda', async (req, res) => {
-  const ipfs = new CID({ host: 'ipfs.infura.io', port: 5001,protocol: 'https' });
-  const cid = await ipfs.add(req.body._buffer);
+  const ipfs = new ipfsClient({ host: 'ipfs.infura.io', port: 5001,protocol: 'https' });
+  const object  = await ipfs.add(JSON.stringify(req.body._json));
+  let cid = "";
+  for await (const item of object) {
+    cid = item;
+    break;
+  } 
+  //console.log("CID",cid.path);
   let response = await POCObj.busqueda(
-    req.body._address, req.body._privateKey, req.body._uuid, req.body._curp, cid);
+    req.body._address, req.body._privateKey, req.body._uuid, req.body._curp, cid.path);
   res.status(200).send(response);
 });
 

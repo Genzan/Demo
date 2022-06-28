@@ -1,7 +1,7 @@
 const Web3 = require("web3");
 const PROVIDER = "http://169.57.44.49:8545";
 const ABICODE = require('../contracts/abi/POC.json');
-const CONTRACT_ADDRESS = "0x0CA016acE7940441d58AECC0C408332279171081";
+const CONTRACT_ADDRESS = "0x2101CafA09ADA5DfD96B8d579D70F124bE74a488";
 
 const web3 = new Web3(
     new Web3.providers.HttpProvider(PROVIDER)
