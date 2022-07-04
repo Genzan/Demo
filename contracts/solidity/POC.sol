@@ -11,22 +11,54 @@ contract POC {
   struct Search {
     string curp;
     string cid;
+    uint32 finalScore;
+    bool closed;
+  }
+
+  struct Response {
+    address node;
+    bool found;
+    uint32 score;
   }
 
   //State Variables
   address private contractOwner;
-  mapping (string => Search) internal Busquedas;
+  uint16 private requiredResponses;
+  mapping (string => Search) internal Searches;
+  mapping (string => Response[]) internal Responses;
 
   //Events
   event SearchAdded(string _uuid, string _curp, string _cid);
+  event ResultAdded(string _uuid, address _node);
+  event SearchClosed(string _uuid, string _curp);
 
-  constructor() public {
+  constructor(uint16 _requiredResponses) {
     contractOwner = msg.sender;
+    requiredResponses = _requiredResponses;
   }
   
-  function NewSearch(string memory _uuid, string memory _curp, string memory _cid) external{
-    Busquedas[_uuid] = Search(_curp, _cid);
+  function newSearch(string memory _uuid, string memory _curp, string memory _cid) external {
+    Searches[_uuid] = Search(_curp, _cid, 0, false);
     emit SearchAdded(_uuid, _curp, _cid);
+  }
+
+  function newResult(string memory _uuid, address _node, bool _found, uint32 _score) external {
+    require(!isOpen(_uuid), "ERR: Search is closed");
+    Responses[_uuid].push(Response(_node, _found, _score));
+    checkforClose(_uuid);
+    emit ResultAdded(_uuid, _node);
+  }
+
+  function checkforClose(string memory _uuid) internal {
+    if(Responses[_uuid].length >= requiredResponses) {
+      Searches[_uuid].closed = true;
+      // Se calcula el promedio aqui? o que se hace?
+      emit SearchClosed(_uuid, Searches[_uuid].curp);
+    }
+  }
+
+  function isOpen(string memory _uuid) public view returns(bool) {
+    return Searches[_uuid].closed;
   }
   
 }
