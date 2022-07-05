@@ -29,8 +29,8 @@ class POC {
         });
         const blockNumber = response.blockNumber;
         let response2 = await contract.getPastEvents("SearchAdded", { fromBlock: blockNumber, toBlock: blockNumber });
-        for(var i=0; i < response2.length; i++){
-            if(response2[i].transactionHash === response.transactionHash){
+        for(var i=0; i < response2.length; i++) {
+            if(response2[i].transactionHash === response.transactionHash) {
                 result = {
                     "uuid": response2[i].returnValues._uuid,
                     "curp": response2[i].returnValues._curp,
@@ -62,7 +62,7 @@ class POC {
         const blockNumber = response.blockNumber;
         let response2 = await contract.getPastEvents("ResultAdded", { fromBlock: blockNumber, toBlock: blockNumber });
         for(var i=0; i < response2.length; i++){
-            if(response2[i].transactionHash === response.transactionHash){
+            if(response2[i].transactionHash === response.transactionHash) {
                 result = {
                     "uuid": response2[i].returnValues._uuid,
                     "node": response2[i].returnValues._node,

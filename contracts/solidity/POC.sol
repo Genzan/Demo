@@ -3,8 +3,13 @@
   Date: 20/Junio/2022
   Version: 0.0.1
 */
+// SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.4.22 <0.9.0;
 
+/// @title POC Contract of the functions requiered to interchange files and request Searches
+/// @author Escudero Caporal Alan Enrique
+/// @notice This contract contains limited functionability
+/// @dev Pending to implement upgradability
 contract POC {
 
   //Errors
@@ -38,10 +43,10 @@ contract POC {
   event SearchClosed(string _uuid, string _curp);
 
   //Modifiers
-  modifier onlyOwner(){
+  modifier onlyOwner() {
     require(contractOwner == msg.sender, "not owner");
     _;
-  }   
+  }
 
   constructor(uint16 _requiredResponses) {
     contractOwner = msg.sender;
@@ -83,7 +88,7 @@ contract POC {
     return Searches[_uuid].cid;
   }
 
-  function getResults(string memory _uuid) external view returns (Response[] memory){
+  function getResults(string memory _uuid) external view returns (Response[] memory) {
     if(bytes(Searches[_uuid].curp).length != 0) {
       revert SearchDontExistError(_uuid);
     }
@@ -97,7 +102,7 @@ contract POC {
     return Searches[_uuid].closed;
   }
 
-  function changeRequiredResponses(uint16 _requiredResponses) external onlyOwner{
+  function changeRequiredResponses(uint16 _requiredResponses) external onlyOwner {
     requiredResponses = _requiredResponses;
   }
   
