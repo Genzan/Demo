@@ -73,6 +73,27 @@ class POC {
         return result;
     };
 
+    getSearchCID = async(_uuid) => {
+        console.log("<getSearchCID>");
+        let response = await contract.methods.getSearchCID(_uuid).call();
+        console.log("</getSearchCID>");
+        return response;
+    };
+
+    getResults = async(_uuid) => {
+        console.log("<getResults>");
+        let response = await contract.methods.getResults(_uuid).call();
+        console.log("</getResults>");
+        return response;
+    };
+
+    isOpen = async(_uuid) => {
+        console.log("<isOpen>");
+        let response = await contract.methods.isOpen(_uuid).call();
+        console.log("</isOpen>");
+        return response;
+    };
+
 }
 
 module.exports = POC;

@@ -21,7 +21,7 @@ app.use(cors({ allowedHeaders: 'Content-Type, Cache-Control' }));
 app.options('*', cors());
 app.use(bodyParser.json({ verify: rawBodyHandler }));
 
-app.post('/dev/busqueda', async (req, res) => {
+app.post('/dev/nueva_busqueda', async (req, res) => {
   const ipfs = new ipfsClient({ host: 'ipfs.infura.io', port: 5001,protocol: 'https' });
   const object  = await ipfs.add(JSON.stringify(req.body._json));
   let cid = "";
@@ -29,9 +29,36 @@ app.post('/dev/busqueda', async (req, res) => {
     cid = item;
     break;
   } 
-  //console.log("CID",cid.path);
-  let response = await POCObj.busqueda(
+  let response = await POCObj.addBusqueda(
     req.body._address, req.body._privateKey, req.body._uuid, req.body._curp, cid.path);
+  res.status(200).send(response);
+});
+
+app.post('/dev/nuevo_resultado', async (req, res) => {
+  const ipfs = new ipfsClient({ host: 'ipfs.infura.io', port: 5001,protocol: 'https' });
+  const object  = await ipfs.add(JSON.stringify(req.body._json));
+  let cid = "";
+  for await (const item of object) {
+    cid = item;
+    break;
+  } 
+  let response = await POCObj.addResultado(
+    req.body._address, req.body._privateKey, req.body._uuid, req.body._found, cid.path);
+  res.status(200).send(response);
+});
+
+app.get('/dev/cid_busqueda', async (req, res) => {
+  let response = await compObj.getSearchCID(req.body._uuid);
+  res.status(200).send(response);
+});
+
+app.get('/dev/obtener_resultados', async (req, res) => {
+  let response = await compObj.getResults(req.body._uuid);
+  res.status(200).send(response);
+});
+
+app.get('/dev/estatus_busqueda', async (req, res) => {
+  let response = await compObj.isOpen(req.body._uuid);
   res.status(200).send(response);
 });
 
