@@ -102,6 +102,8 @@ contract POC {
     return Searches[_uuid].closed;
   }
 
+  //Metodo para cerrar Busqueda al tener un resultado final
+
   function changeRequiredResponses(uint16 _requiredResponses) external onlyOwner {
     requiredResponses = _requiredResponses;
   }
