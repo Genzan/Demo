@@ -10,20 +10,25 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract Demo {
 
   //State Variables
-  address private contractOwner;
   using Counters for Counters.Counter;
   Counters.Counter private _Ids;
   mapping (string => string[]) internal Atestaciones;
   mapping (uint256 => string) internal Busqueda;
+  mapping (address => bool) private whitelist;
 
   //Events
   event AtestacionAdded(uint256 _id, string _curp, string _playground);
 
+  modifier onlyGuest() {
+    require(whitelist[msg.sender], "Not on Whitelist");
+    _;
+  }
+
   constructor() public {
-    contractOwner = msg.sender;
+    whitelist[msg.sender] = true;
   }
   
-  function Atestacion(string memory _curp, string memory _playground) external{
+  function Atestacion(string memory _curp, string memory _playground) external {
     _Ids.increment();
     uint256 newItemId = _Ids.current();
     Atestaciones[_curp].push(_playground);
@@ -31,12 +36,16 @@ contract Demo {
     emit AtestacionAdded(newItemId, _curp, _playground);
   }
 
-  function SearchByCurp(string memory _curp) external view returns (string[] memory){
+  function SearchByCurp(string memory _curp) external view returns (string[] memory) {
     return (Atestaciones[_curp]);
   }
 
-  function SearchByID(uint256 _id) external view returns (string memory){
+  function SearchByID(uint256 _id) external view returns (string memory) {
     return (Busqueda[_id]);
+  }
+
+  function addToWhitelist(address _account) external onlyGuest {
+    whitelist[_account] = true;
   }
   
 }

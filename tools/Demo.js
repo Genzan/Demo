@@ -10,8 +10,8 @@ const contract = new web3.eth.Contract(ABICODE,CONTRACT_ADDRESS);
 
 class Demo {
 
-    atestacion = async(_address, _privateKey, _curp, _playground) => {
-        console.log("<atestacion>");
+    atestacionFull = async(_address, _privateKey, _curp, _playground) => {
+        console.log("<atestacionFull>");
         let result = false;
         let encodedABI = contract.methods.Atestacion(_curp, _playground).encodeABI();
         let signedTx = await web3.eth.accounts.signTransaction(
@@ -37,7 +37,44 @@ class Demo {
                 }
             }
         }
+        console.log("</atestacionFull>");
+        return result;
+    };
+
+    atestacion = async(_address, _privateKey, _curp, _playground) => {
+        console.log("<atestacion>");
+        let result = false;
+        let encodedABI = contract.methods.Atestacion(_curp, _playground).encodeABI();
+        let signedTx = await web3.eth.accounts.signTransaction(
+            {
+              data: encodedABI,
+              from: _address,
+              gas: 2000000,
+              to: CONTRACT_ADDRESS,
+            },
+            _privateKey,
+            false,
+        );
+        let response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+            console.error("ERR",err);
+        });
         console.log("</atestacion>");
+        return response;
+    };
+
+    atestacionResult = async(_address, _privateKey, _response) => {
+        console.log("<atestacionResult>");
+        const blockNumber = _response.blockNumber;
+        let response = await contract.getPastEvents("AtestacionAdded", { fromBlock: blockNumber, toBlock: blockNumber });
+        for(var i=0; i < response.length; i++){
+            if(response2[i].transactionHash === response.transactionHash){
+                result = {
+                    "id": response[i].returnValues._id,
+                    "hash": _response.transactionHash
+                }
+            }
+        }
+        console.log("</atestacionResult>");
         return result;
     };
 
