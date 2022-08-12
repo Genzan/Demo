@@ -1,7 +1,7 @@
 const Web3 = require("web3");
 const PROVIDER = "http://169.57.44.49:8545";
 const ABICODE = require('../contracts/abi/Demo.json');
-const CONTRACT_ADDRESS = "0x0CA016acE7940441d58AECC0C408332279171081";
+const CONTRACT_ADDRESS = "0x348eF166D42672919C17e510453F1DB3b391FF4b";
 
 const web3 = new Web3(
     new Web3.providers.HttpProvider(PROVIDER)
@@ -24,9 +24,10 @@ class Demo {
             _privateKey,
             false,
         );
-        let response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+        let response = web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
             console.error("ERR",err);
         });
+        console.log("response",response);
         const blockNumber = response.blockNumber;
         let response2 = await contract.getPastEvents("AtestacionAdded", { fromBlock: blockNumber, toBlock: blockNumber });
         for(var i=0; i < response2.length; i++){
