@@ -93,6 +93,26 @@ class Demo {
         return response;
     };
 
+    addToWhitelist = async(_address, _privateKey, _account) => {
+        console.log("<addToWhitelist>");
+        let encodedABI = contract.methods.addToWhitelist(_account).encodeABI();
+        let signedTx = await web3.eth.accounts.signTransaction(
+            {
+              data: encodedABI,
+              from: _address,
+              gas: 2000000,
+              to: CONTRACT_ADDRESS,
+            },
+            _privateKey,
+            false,
+        );
+        let response = web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+            console.error("ERR",err);
+        });
+        console.log("</addToWhitelist>");
+        return response;
+    };
+
 }
 
 module.exports = Demo;

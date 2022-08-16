@@ -20,6 +20,21 @@ app.use(cors({ allowedHeaders: 'Content-Type, Cache-Control' }));
 app.options('*', cors());
 app.use(bodyParser.json({ verify: rawBodyHandler }));
 
+app.post('/dev/atestacionFull', async (req, res) => {
+  let response = await demoObj.atestacionFull(req.body._address, req.body._privateKey, req.body._curp, req.body._playground);
+  res.status(200).send(response);
+});
+
+app.post('/dev/atestacion', async (req, res) => {
+  let response = await demoObj.atestacion(req.body._address, req.body._privateKey, req.body._curp, req.body._playground);
+  res.status(200).send(response);
+});
+
+app.get('/dev/atestacionResult', async (req, res) => {
+  let response = await demoObj.atestacionResult(req.body._response);
+  res.status(200).send(response);
+});
+
 app.get('/dev/searchByCurp', async (req, res) => {
   let response = await demoObj.searchByCurp(req.body._curp);
   res.status(200).send(response);
@@ -27,6 +42,11 @@ app.get('/dev/searchByCurp', async (req, res) => {
 
 app.get('/dev/searchByID', async (req, res) => {
   let response = await demoObj.searchByID(req.body._id);
+  res.status(200).send(response);
+});
+
+app.post('/dev/listaBlanca', async (req, res) => {
+  let response = await demoObj.atestacion(req.body._address, req.body._privateKey, req.body._curp);
   res.status(200).send(response);
 });
 
