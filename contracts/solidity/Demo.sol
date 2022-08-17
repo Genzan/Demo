@@ -11,6 +11,7 @@ contract Demo {
 
   //Errors
   error NotOwnerOfSearch();
+  error NotEnoughParameters();
 
   //State Variables
   using Counters for Counters.Counter;
@@ -39,6 +40,9 @@ contract Demo {
   }
   
   function Atestacion(string memory _curp, string memory _playground) external onlyGuest {
+    if(bytes(_curp).length == 0 || bytes(_playground).length == 0) {
+      revert NotEnoughParameters();
+    }
     _Ids.increment();
     uint256 newItemId = _Ids.current();
     Atestaciones[keccak256(abi.encodePacked(_curp))].playground.push(_playground);
