@@ -38,7 +38,7 @@ contract Demo {
     whitelist[msg.sender] = true;
   }
   
-  function Atestacion(string memory _curp, string memory _playground) external {
+  function Atestacion(string memory _curp, string memory _playground) external onlyGuest {
     _Ids.increment();
     uint256 newItemId = _Ids.current();
     Atestaciones[keccak256(abi.encodePacked(_curp))].playground.push(_playground);
@@ -49,14 +49,14 @@ contract Demo {
   }
 
   function SearchByCurp(string memory _curp) external view returns (string[] memory) {
-    if(Atestaciones[keccak256(abi.encodePacked(_curp))].owner == msg.sender) {
+    if(Atestaciones[keccak256(abi.encodePacked(_curp))].owner != msg.sender) {
       revert NotOwnerOfSearch();
     }
     return (Atestaciones[keccak256(abi.encodePacked(_curp))].playground);
   }
 
   function SearchByID(uint256 _id) external view returns (string[] memory) {
-    if(Busqueda[_id].owner == msg.sender) {
+    if(Busqueda[_id].owner != msg.sender) {
       revert NotOwnerOfSearch();
     }
     return (Busqueda[_id].playground);
