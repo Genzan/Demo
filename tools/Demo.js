@@ -1,7 +1,7 @@
 const Web3 = require("web3");
 const PROVIDER = "http://169.57.44.49:8545";
 const ABICODE = require('../contracts/abi/Demo.json');
-const CONTRACT_ADDRESS = "0xA76F556113Aa4128922aB78089189AcC6cA945b1";
+const CONTRACT_ADDRESS = "0xf4fb48566c4d60fBE5F653e0E83E32E7199E2c00";
 
 const web3 = new Web3(
     new Web3.providers.HttpProvider(PROVIDER)
@@ -24,7 +24,7 @@ class Demo {
             _privateKey,
             false,
         );
-        let response = web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+        let response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
             console.error("ERR",err);
         });
         console.log("response",response);
@@ -44,7 +44,6 @@ class Demo {
 
     atestacion = async(_address, _privateKey, _curp, _playground) => {
         console.log("<atestacion>");
-        let result = false;
         let encodedABI = contract.methods.Atestacion(_curp, _playground).encodeABI();
         let signedTx = await web3.eth.accounts.signTransaction(
             {
@@ -56,21 +55,22 @@ class Demo {
             _privateKey,
             false,
         );
-        let response = await web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+        let response = web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
             console.error("ERR",err);
         });
         console.log("</atestacion>");
         return response;
     };
 
-    atestacionResult = async(_address, _privateKey, _response) => {
+    atestacionResult = async(_response) => {
         console.log("<atestacionResult>");
+        let result = false;
         const blockNumber = _response.blockNumber;
-        let response = await contract.getPastEvents("AtestacionAdded", { fromBlock: blockNumber, toBlock: blockNumber });
-        for(var i=0; i < response.length; i++){
-            if(response2[i].transactionHash === response.transactionHash){
+        let events = await contract.getPastEvents("AtestacionAdded", { fromBlock: blockNumber, toBlock: blockNumber });
+        for(var i=0; i < events.length; i++){
+            if(events[i].transactionHash === _response.transactionHash){
                 result = {
-                    "id": response[i].returnValues._id,
+                    "id": events[i].returnValues._id,
                     "hash": _response.transactionHash
                 }
             }
@@ -79,16 +79,16 @@ class Demo {
         return result;
     };
 
-    searchByCurp = async(_curp) => {
+    searchByCurp = async(_address, _curp) => {
         console.log("<searchByCurp>");
-        let response = await contract.methods.SearchByCurp(_curp).call();
+        let response = await contract.methods.SearchByCurp(_curp).call({from:_address});
         console.log("</searchByCurp>");
         return response;
     };
 
-    searchByID = async(_id) => {
+    searchByID = async(_address, _id) => {
         console.log("<searchByID>");
-        let response = await contract.methods.SearchByID(_id).call();
+        let response = await contract.methods.SearchByID(_id).call({from:_address});
         console.log("</searchByID>");
         return response;
     };
@@ -110,6 +110,26 @@ class Demo {
             console.error("ERR",err);
         });
         console.log("</addToWhitelist>");
+        return response;
+    };
+
+    removeFromWhitelist = async(_address, _privateKey, _account) => {
+        console.log("<removeFromWhitelist>");
+        let encodedABI = contract.methods.removeFromWhitelist(_account).encodeABI();
+        let signedTx = await web3.eth.accounts.signTransaction(
+            {
+              data: encodedABI,
+              from: _address,
+              gas: 2000000,
+              to: CONTRACT_ADDRESS,
+            },
+            _privateKey,
+            false,
+        );
+        let response = web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+            console.error("ERR",err);
+        });
+        console.log("</removeFromWhitelist>");
         return response;
     };
 

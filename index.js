@@ -36,17 +36,22 @@ app.get('/dev/atestacionResult', async (req, res) => {
 });
 
 app.get('/dev/searchByCurp', async (req, res) => {
-  let response = await demoObj.searchByCurp(req.body._curp);
+  let response = await demoObj.searchByCurp(req.body._address, req.body._curp);
   res.status(200).send(response);
 });
 
 app.get('/dev/searchByID', async (req, res) => {
-  let response = await demoObj.searchByID(req.body._id);
+  let response = await demoObj.searchByID(req.body._address, req.body._id);
   res.status(200).send(response);
 });
 
-app.post('/dev/listaBlanca', async (req, res) => {
-  let response = await demoObj.atestacion(req.body._address, req.body._privateKey, req.body._curp);
+app.post('/dev/AddListaBlanca', async (req, res) => {
+  let response = await demoObj.addToWhitelist(req.body._address, req.body._privateKey, req.body._account);
+  res.status(200).send(response);
+});
+
+app.post('/dev/RemoveListaBlanca', async (req, res) => {
+  let response = await demoObj.removeFromWhitelist(req.body._address, req.body._privateKey, req.body._account);
   res.status(200).send(response);
 });
 

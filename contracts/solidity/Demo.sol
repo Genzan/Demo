@@ -69,5 +69,9 @@ contract Demo {
   function addToWhitelist(address _account) external onlyGuest {
     whitelist[_account] = true;
   }
+
+  function removeFromWhitelist(address _account) external onlyGuest {
+    whitelist[_account] = false;
+  }
   
 }
